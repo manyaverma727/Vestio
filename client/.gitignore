@@ -1,0 +1,27 @@
+# Node.js dependencies
+# Ignore all node_modules folders in the project
+/node_modules
+/client/node_modules
+/server/node_modules
+
+# Environment files (SECRETS!)
+# Never commit your secret keys, passwords, or API keys
+.env
+client/.env
+server/.env
+/server/.env.local
+*.env
+
+# Build & cache files
+# These are temporary or auto-generated folders
+/client/dist
+/client/.vite/
+
+# IDE & system config files
+# Ignores editor-specific and OS-specific "junk" files
+.vscode/
+.idea/
+.DS_Store
+
+# Log files
+*.log
