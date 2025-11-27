@@ -62,7 +62,7 @@ const LoginPage = () => {
                 </form>
 
                 <div className="mt-6 text-center">
-                    
+
                     {/* home page vapas jane ke liye */}
 
                     <a href="/" className="text-blue-400 hover:text-blue-300 transition-colors duration-200 text-sm">
