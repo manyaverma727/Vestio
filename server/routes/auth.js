@@ -50,14 +50,13 @@ router.post('/register', async (req, res) => {
         }
 
         // jwt token bhi generate kar rha
-        
         const token = jwt.sign(
         { id: user._id }, 
         process.env.JWT_SECRET, 
         { expiresIn: '1h' }
         );
 
-        res.json({ 
+        return res.json({ 
         token, 
         user: { id: user._id, email: user.email } 
         });

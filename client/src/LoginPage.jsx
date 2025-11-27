@@ -1,15 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate()
 
-    const handleSubmit = (e) => {
-        e.preventDefault();         //reloading se rokta hai
-        setIsLoading(true);
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setError('')
+        setIsLoading(true)
+
+        try {
+            // sending login request to server
+
+            const res = await axios.post('https://vestio-trading.onrender.com/api/auth/login', {
+                email,
+                password,
+            })
+
+            // token mil rha yaha se
+
+            const token = res.data.token
+            
+            //token save ho rha
+
+            localStorage.setItem('token', token)
+            
+            //success
+
+            alert('Login Successful!')
+            navigate('/') // Go to Home Page
+
+        } catch (err) {
+            setError(err.response?.data?.msg || 'Invalid credentials')
+        } finally {
+            setIsLoading(false)
+        }
     };
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
             <div className="bg-gray-800/50 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-gray-700/50 w-full max-w-md">
@@ -20,6 +51,11 @@ const LoginPage = () => {
                     <p className="text-gray-400 text-center text-sm">Welcome back! Please sign in to continue.</p>
                 </div>
             
+                {error && (
+                    <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-center text-sm font-semibold text-red-300">
+                        {error}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit} className="space-y-5">
 
                     {/* email part*/ }
@@ -65,13 +101,13 @@ const LoginPage = () => {
 
                     {/* home page vapas jane ke liye */}
 
-                    <a href="/" className="text-blue-400 hover:text-blue-300 transition-colors duration-200 text-sm">
+                    <Link to="/" className="text-blue-400 hover:text-blue-300 transition-colors duration-200 text-sm">
                         ← Back to Home
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>
     );
 };
 
-export default LoginPage;
+export default LoginPage
