@@ -18,17 +18,17 @@ const userSchema = new mongoose.Schema({
 
     // password hashing kar rha for security
     
-    userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
+//     userSchema.pre('save', async function(next) {
+//     if (!this.isModified('password')) return next();
     
-    try {
-        const salt = await bcryptjs.genSalt(10);
-        this.password = await bcryptjs.hash(this.password, salt);
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
+//     try {
+//         const salt = await bcryptjs.genSalt(10);
+//         this.password = await bcryptjs.hash(this.password, salt);
+//         next();
+//     } catch (error) {
+//         next(error);
+//     }
+// });
 
 const User = mongoose.model('User', userSchema);
 export default User;

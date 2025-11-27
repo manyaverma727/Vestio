@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
+
 const RegisterPage = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ const RegisterPage = () => {
         setIsLoading(true);
 
         try {
-            await axios.post('https://vestio-trading.onrender.com/api/auth/register', {
+            await axios.post('http://localhost:3001/api/auth/register', {
                 name,
                 email,
                 password,

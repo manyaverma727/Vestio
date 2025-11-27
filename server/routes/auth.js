@@ -1,7 +1,8 @@
 import express from 'express';
-import bcryptjs from 'bcryptjs';
+// import bcryptjs, { hashSync } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
@@ -11,21 +12,31 @@ router.post('/register', async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        console.log(req.body);
+
         //check kar rha ki ye user pehle se exist kar rha ki nhi
 
         const existingUser = await User.findOne({ email });
+
+
+        const hashPassword = await bcrypt.hash(password, 10);
+        
         if (existingUser) {
         return res.status(400).json({ msg: 'User already exists' });
         }
 
         // agar exist nhi karta to new user bana dega
 
-        const newUser = new User({ email, password });
-        await newUser.save();
+        const newUser = await User.create({ email, password:hashPassword });
+   
+     
+
+   
 
         res.status(201).json({ msg: 'User registered successfully!' });
 
     } catch (err) {
+        console.log(err.message);
         res.status(500).json({ error: err.message });
     }
     });
@@ -44,7 +55,7 @@ router.post('/register', async (req, res) => {
 
         // password match kar rha
 
-        const isMatch = await bcryptjs.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
         return res.status(400).json({ msg: 'Invalid credentials' });
         }

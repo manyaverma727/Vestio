@@ -17,7 +17,7 @@ const LoginPage = () => {
         try {
             // sending login request to server
 
-            const res = await axios.post('https://vestio-trading.onrender.com/api/auth/login', {
+            const res = await axios.post('http://localhost:3001/api/auth/login', {
                 email,
                 password,
             })
