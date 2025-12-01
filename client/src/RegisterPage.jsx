@@ -16,7 +16,7 @@ const RegisterPage = () => {
         setIsLoading(true);
 
         try {
-            await axios.post('http://localhost:3001/api/auth/register', {
+            await axios.post('https://vestio-api.onrender.com/api/auth/register', {
                 name,
                 email,
                 password,

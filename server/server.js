@@ -41,7 +41,7 @@ mongoose.connect(process.env.DATABASE_URL)
     .then(() => console.log('YEAHH!!...... MongoDB Connected'))
     .catch((err) => console.log('OOPS!!!....TRY AGAIN  DB Error:', err));
 
-// --- START ---
+ // server start kar rha
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
