@@ -6,7 +6,7 @@ Vestio is a full-stack MERN application that simulates a real-world stock tradin
 
 🚀 Live Demo
 
-Frontend (App): https://vestio-pi.vercel.app/login
+Frontend (App): https://vestio-pi.vercel.app/
 
 Backend (API): https://vestio-trading.onrender.com
 
