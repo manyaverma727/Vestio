@@ -83,7 +83,7 @@ const HomePage = () => {
                     <div className="absolute right-0 mt-3 w-48 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden py-1 z-50">
                     <div className="px-4 py-2 border-b border-gray-800">
                         <p className="text-xs text-gray-400">Signed in as</p>
-                        <p className="text-sm font-bold text-white truncate">User</p>
+                        <p className="text-sm font-bold text-white truncate">{}</p>
                     </div>
                     
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
