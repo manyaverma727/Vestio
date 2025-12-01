@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/auth.js'; 
-
+import stocksRoutes from './routes/stocks.js';
 dotenv.config();
 
 const app = express();
@@ -16,7 +16,7 @@ app.use(cors());          //frontend or backend ko connect karta hai
 app.use(express.json());  
 
 app.use('/api/auth', authRoutes); 
-
+app.use('/api/stocks', stocksRoutes)
 // database connection vala part
 
 mongoose.connect(process.env.DATABASE_URL)

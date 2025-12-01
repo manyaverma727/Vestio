@@ -3,6 +3,8 @@ import HomePage from './HomePage';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import LiquidEther from './components/LiquidEther';
+import Navbar from './components/Navbar';
+import DashboardPage from './DashboardPage';
 import './index.css';
 
 function App() {
@@ -39,12 +41,18 @@ function App() {
                         autoRampDuration={0.6}
                     />
                 </div>
+
+                {/** Navbar */}
+                <div style={{ position: 'relative', zIndex: 50 }}>
+                    <Navbar />
+                </div>
                 {/* Page Content */}
                 <div style={{ position: 'relative', zIndex: 10 }}>
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/dashboard" element={<DashboardPage />} />
                     </Routes>
                 </div>
             </div>
