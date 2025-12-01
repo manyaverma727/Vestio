@@ -15,25 +15,17 @@ const LoginPage = () => {
         setIsLoading(true)
 
         try {
-            // sending login request to server
-
             const res = await axios.post('http://localhost:3001/api/auth/login', {
                 email,
                 password,
             })
 
-            // token mil rha yaha se
-
             const token = res.data.token
-            
-            //token save ho rha
-
             localStorage.setItem('token', token)
+            localStorage.setItem('email', email)
             
-            //success
-
             alert('Login Successful!')
-            navigate('/') // Go to Home Page
+            navigate('/')
 
         } catch (err) {
             setError(err.response?.data?.msg || 'Invalid credentials')
@@ -41,71 +33,88 @@ const LoginPage = () => {
             setIsLoading(false)
         }
     };
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
-            <div className="bg-gray-800/50 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-gray-700/50 w-full max-w-md">
-                <div className="mb-6">
-                    <h2 className="text-4xl font-bold mb-2 text-center bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                        Login
-                    </h2>
-                    <p className="text-gray-400 text-center text-sm">Welcome back! Please sign in to continue.</p>
-                </div>
-            
-                {error && (
-                    <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-center text-sm font-semibold text-red-300">
-                        {error}
-                    </div>
-                )}
-                <form onSubmit={handleSubmit} className="space-y-5">
-
-                    {/* email part*/ }
-
-                    <div>
-                        <label className="block text-gray-300 font-semibold mb-2 text-sm">Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            placeholder="Enter your email"
-                            required
-                        />
-                    </div>
-
-                    {/* password vala part */}
-
-                    <div>
-                        <label className="block text-gray-300 font-semibold mb-2 text-sm">Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            placeholder="Enter your password"
-                            required
-                        />
-                    </div>
-
-                    {/* Submit Button */}
-
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        <div className="min-h-screen bg-transparent text-white font-sans selection:bg-blue-500 selection:text-white overflow-x-hidden">
+            {/* Navbar matching HomePage */}
+            <nav className="fixed top-0 left-0 w-full z-50 px-8 py-6 flex justify-between items-center backdrop-blur-md bg-black/60 border-b border-white/10">
+                <Link to="/" className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent cursor-pointer">
+                    Vestio.
+                </Link>
+                <div className="flex items-center gap-6">
+                    <Link 
+                        to="/register" 
+                        className="px-6 py-2 bg-white text-black font-bold text-sm rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.3)]"
                     >
-                        Sign In
-                    </button>
-                </form>
-
-                <div className="mt-6 text-center">
-
-                    {/* home page vapas jane ke liye */}
-
-                    <Link to="/" className="text-blue-400 hover:text-blue-300 transition-colors duration-200 text-sm">
-                        ← Back to Home
+                        Sign Up
                     </Link>
                 </div>
-            </div>
+            </nav>
+
+            {/* Main Content */}
+            <main className="flex flex-col items-center justify-center text-center pt-40 px-4 relative min-h-screen">
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+
+                <div className="w-full max-w-md relative z-10">
+                    <div className="mb-8">
+                        <h2 className="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight">
+                            <span className="bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+                                Welcome Back
+                            </span>
+                        </h2>
+                        <p className="text-lg text-gray-400">Sign in to continue your trading journey</p>
+                    </div>
+
+                    {error && (
+                        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-center text-sm font-semibold text-red-300">
+                            {error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-6 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-8">
+                        <div>
+                            <label className="block text-gray-300 font-semibold mb-2 text-sm">Email</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500/50 transition-all"
+                                placeholder="Enter your email"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-gray-300 font-semibold mb-2 text-sm">Password</label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500/50 transition-all"
+                                placeholder="Enter your password"
+                                required
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="group relative w-full px-8 py-4 bg-blue-600 rounded-full font-bold text-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        >
+                            <span className="relative z-10">
+                                {isLoading ? 'Signing In...' : 'Sign In'} &rarr;
+                            </span>
+                            <div className="absolute inset-0 h-full w-full scale-0 rounded-full transition-all duration-300 group-hover:scale-100 group-hover:bg-blue-500/50"></div>
+                        </button>
+                    </form>
+
+                    <div className="mt-6 text-center">
+                        <Link to="/" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                            ← Back to Home
+                        </Link>
+                    </div>
+                </div>
+            </main>
         </div>
     );
 };
