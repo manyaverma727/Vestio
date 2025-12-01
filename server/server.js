@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/auth.js'; 
 import stocksRoutes from './routes/stocks.js';
+import tradeRoutes from './routes/trade.js';
 dotenv.config();
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes); 
 app.use('/api/stocks', stocksRoutes)
+app.use('/api/trade', tradeRoutes);
 // database connection vala part
 
 mongoose.connect(process.env.DATABASE_URL)

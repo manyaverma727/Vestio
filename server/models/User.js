@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6,
     },
+    balance: {
+        type: Number,
+        default: 100000,     // Every new user starts with $100k paper money
+    },
     }, { timestamps: true });
 
     // password hashing kar rha for security
