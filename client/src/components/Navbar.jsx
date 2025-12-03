@@ -14,7 +14,7 @@ const Navbar = () => {
         const checkLogin = () => {
             const token = localStorage.getItem('token');
             const email = localStorage.getItem('email');
-            
+
             if (token) {
                 setIsLoggedIn(true);
                 if (email) {
@@ -43,6 +43,21 @@ const Navbar = () => {
                 Vestio.
             </Link>
 
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center gap-8">
+                <Link to="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                    Home
+                </Link>
+                <Link to="/about" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                    About Us
+                </Link>
+                {isLoggedIn && (
+                    <Link to="/dashboard" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                        Dashboard
+                    </Link>
+                )}
+            </div>
+
             <div className="flex items-center gap-6">
                 {!isLoggedIn ? (
                     <>
@@ -55,7 +70,7 @@ const Navbar = () => {
                     </>
                 ) : (
                     <div className="relative">
-                        <button 
+                        <button
                             onClick={() => setShowDropdown(!showDropdown)}
                             className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg hover:shadow-blue-500/50 transition-all"
                         >

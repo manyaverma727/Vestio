@@ -97,6 +97,7 @@ router.post('/buy', async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 });
+// sell engine
 router.post('/sell', async (req, res) => {
     const { userId, symbol, quantity, price } = req.body;
     const totalValue = quantity * price;
@@ -106,32 +107,38 @@ router.post('/sell', async (req, res) => {
         const user = await User.findById(userId);
         const holding = await Portfolio.findOne({ userId, symbol: upperSymbol });
 
-        // 1. VALIDATION: Do they actually own the stock?
+        // check kar rha ki kya us company ke stock uske paas hai
+
         if (!holding) {
             return res.status(400).json({ msg: 'You do not own this stock' });
         }
 
-        // 2. VALIDATION: Do they have ENOUGH shares?
+        // check kar rhe ki enough shares hai
+
         if (holding.quantity < quantity) {
             return res.status(400).json({ msg: `Not enough shares. You have ${holding.quantity}.` });
         }
 
-        // 3. CASH OUT: Add money back to balance
+        // money add kar de rha balance me
+
         user.balance += totalValue;
         await user.save();
 
-        // 4. UPDATE INVENTORY: Subtract shares
+        // oney subtract kar rha
         holding.quantity -= quantity;
 
         if (holding.quantity === 0) {
-            // If they sold everything, delete the entry from the database
+            // agar saare sell kar diye to database clear kar do
+
             await Portfolio.findByIdAndDelete(holding._id);
         } else {
-            // Otherwise, save the new quantity
+            // varna save kar lo new quantity
+
             await holding.save();
         }
 
-        // 5. RECORD HISTORY: Save the transaction log
+        // record history
+
         const transaction = new Transaction({
             userId,
             symbol: upperSymbol,

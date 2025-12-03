@@ -5,6 +5,7 @@ import RegisterPage from './RegisterPage';
 import LiquidEther from './components/LiquidEther';
 import Navbar from './components/Navbar';
 import DashboardPage from './DashboardPage';
+import AboutUsPage from './AboutUsPage';
 import './index.css';
 
 function App() {
@@ -12,8 +13,8 @@ function App() {
         <BrowserRouter>
             <div style={{ position: 'relative', width: '100%', minHeight: '100vh' }}>
                 {/* Global LiquidEther Background */}
-                <div 
-                    style={{ 
+                <div
+                    style={{
                         position: 'fixed',
                         top: 0,
                         left: 0,
@@ -53,6 +54,7 @@ function App() {
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/about" element={<AboutUsPage />} />
                     </Routes>
                 </div>
             </div>

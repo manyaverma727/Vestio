@@ -12,7 +12,8 @@ const DashboardPage = () => {
     const [stock, setStock] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // buy state vala part
+    // buy/sell state vala part
+    const [tradeMode, setTradeMode] = useState('BUY'); // 'BUY' or 'SELL'
     const [quantity, setQuantity] = useState(1);
     const [buyError, setBuyError] = useState('');
     const [portfolio, setPortfolio] = useState([]);
@@ -77,9 +78,9 @@ const DashboardPage = () => {
         }
     };
 
-    // stock khareedne ke liye hai ye
+    // stock khareedne/beechne ke liye hai ye
 
-    const handleBuy = async () => {
+    const handleTrade = async () => {
         const token = localStorage.getItem('token');
 
         // user id chahiye beechne ya khareedne ke liye
@@ -89,14 +90,15 @@ const DashboardPage = () => {
         }
 
         try {
-            const res = await axios.post(`${API_BASE_URL}/api/trade/buy`, {
+            const endpoint = tradeMode === 'BUY' ? '/api/trade/buy' : '/api/trade/sell';
+            const res = await axios.post(`${API_BASE_URL}${endpoint}`, {
                 userId: user.id,
                 symbol: stock.symbol,
                 quantity: Number(quantity),
                 price: stock.price
             });
 
-            alert(`Success! Bought ${quantity} shares of ${stock.symbol}`);
+            alert(`Success! ${tradeMode === 'BUY' ? 'Bought' : 'Sold'} ${quantity} shares of ${stock.symbol}`);
 
             // balance update vala part
 
@@ -167,6 +169,22 @@ const DashboardPage = () => {
                                 </div>
                             </div>
 
+                            {/* Buy/Sell Toggle */}
+                            <div className="flex gap-2 bg-black/30 p-1 rounded-lg">
+                                <button
+                                    onClick={() => setTradeMode('BUY')}
+                                    className={`flex-1 py-2 rounded-md font-bold text-sm transition-all ${tradeMode === 'BUY' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                                >
+                                    Buy
+                                </button>
+                                <button
+                                    onClick={() => setTradeMode('SELL')}
+                                    className={`flex-1 py-2 rounded-md font-bold text-sm transition-all ${tradeMode === 'SELL' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                                >
+                                    Sell
+                                </button>
+                            </div>
+
                             {/* quantity increase or decrease karne ke liye arrow button  */}
                             <div className="flex gap-2">
                                 <input
@@ -177,10 +195,10 @@ const DashboardPage = () => {
                                     className="w-20 bg-black/50 border border-gray-600 rounded-lg px-2 text-center text-white"
                                 />
                                 <button
-                                    onClick={handleBuy}
-                                    className="flex-1 bg-green-600 hover:bg-green-500 text-sm py-2 rounded-lg font-bold shadow-lg transition-transform hover:scale-105"
+                                    onClick={handleTrade}
+                                    className={`flex-1 text-sm py-2 rounded-lg font-bold shadow-lg transition-transform hover:scale-105 ${tradeMode === 'BUY' ? 'bg-green-600 hover:bg-green-500' : 'bg-red-600 hover:bg-red-500'}`}
                                 >
-                                    Confirm Buy
+                                    {tradeMode === 'BUY' ? 'Confirm Buy' : 'Confirm Sell'}
                                 </button>
                             </div>
                             {buyError && <p className="text-red-400 text-xs text-center">{buyError}</p>}
