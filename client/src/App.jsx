@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import DashboardPage from './DashboardPage';
 import AboutUsPage from './AboutUsPage';
 import CompanyListPage from './CompanyListPage';
+import ProfilePage from './ProfilePage';
 import './index.css';
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
                         <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/about" element={<AboutUsPage />} />
                         <Route path="/companies" element={<CompanyListPage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
                     </Routes>
                 </div>
             </div>

@@ -91,6 +91,9 @@ const Navbar = () => {
                                 <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
                                     Dashboard
                                 </Link>
+                                <Link to="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                                    Profile
+                                </Link>
                                 <div className="border-t border-gray-800 my-1"></div>
                                 <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-800 hover:text-red-300 transition-colors">
                                     Sign Out
@@ -117,46 +120,105 @@ const Navbar = () => {
                 )}
             </button>
 
-            {/* Mobile Menu Overlay */}
+            {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-8 md:hidden">
-                    <Link to="/" className="text-xl font-medium text-gray-300 hover:text-white transition-colors">
-                        Home
-                    </Link>
-                    <Link to="/companies" className="text-xl font-medium text-gray-300 hover:text-white transition-colors">
-                        Market
-                    </Link>
-                    <Link to="/about" className="text-xl font-medium text-gray-300 hover:text-white transition-colors">
-                        About Us
-                    </Link>
-                    {isLoggedIn && (
-                        <Link to="/dashboard" className="text-xl font-medium text-gray-300 hover:text-white transition-colors">
-                            Dashboard
-                        </Link>
-                    )}
+                <div className="fixed inset-0 z-40 md:hidden">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/80"
+                        onClick={() => setIsMenuOpen(false)}
+                    />
 
-                    <div className="w-16 h-px bg-gray-800 my-2"></div>
-
-                    {!isLoggedIn ? (
-                        <div className="flex flex-col gap-4 items-center w-full px-8">
-                            <Link to="/login" className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-200">
-                                Log In
-                            </Link>
-                            <Link to="/register" className="w-full text-center px-6 py-3 bg-white text-black font-bold text-lg rounded-full hover:bg-gray-200 transition-all duration-300">
-                                Sign Up
-                            </Link>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col gap-4 items-center">
-                            <div className="text-center">
-                                <p className="text-xs text-gray-500 mb-1">Signed in as</p>
-                                <p className="text-lg font-bold text-white">{userEmail}</p>
-                            </div>
-                            <button onClick={handleLogout} className="text-red-400 hover:text-red-300 font-medium text-lg transition-colors">
-                                Sign Out
+                    {/* Menu Panel */}
+                    <div className="absolute top-0 right-0 h-full w-72 bg-gray-1000 shadow-xl">
+                        {/* Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-gray-800">
+                            <span className="text-lg font-bold text-white">Menu</span>
+                            <button
+                                onClick={() => setIsMenuOpen(false)}
+                                className="text-gray-400 hover:text-white"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
                             </button>
                         </div>
-                    )}
+
+                        {/* Links */}
+                        <div className="p-6 space-y-4">
+                            <Link
+                                to="/"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="block text-white text-lg py-2 hover:text-blue-400"
+                            >
+                                Home
+                            </Link>
+                            <Link
+                                to="/companies"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="block text-white text-lg py-2 hover:text-blue-400"
+                            >
+                                Market
+                            </Link>
+                            <Link
+                                to="/about"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="block text-white text-lg py-2 hover:text-blue-400"
+                            >
+                                About Us
+                            </Link>
+                            {isLoggedIn && (
+                                <Link
+                                    to="/dashboard"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="block text-white text-lg py-2 hover:text-blue-400"
+                                >
+                                    Dashboard
+                                </Link>
+                            )}
+
+                            <div className="border-t border-gray-800 my-4 pt-4">
+                                {!isLoggedIn ? (
+                                    <>
+                                        <Link
+                                            to="/login"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="block text-white text-lg py-2 hover:text-blue-400"
+                                        >
+                                            Log In
+                                        </Link>
+                                        <Link
+                                            to="/register"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="block mt-4 text-center bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700"
+                                        >
+                                            Sign Up
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="bg-gray-800 p-4 rounded-lg mb-4">
+                                            <p className="text-xs text-gray-400">Signed in as</p>
+                                            <p className="text-sm text-white font-bold truncate">{userEmail}</p>
+                                        </div>
+                                        <Link
+                                            to="/profile"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="block text-white text-lg py-2 mb-2 hover:text-blue-400"
+                                        >
+                                            Profile
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="block w-full text-center text-red-400 py-3 border border-red-400/30 rounded-lg hover:bg-red-400/10"
+                                        >
+                                            Sign Out
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </nav>
