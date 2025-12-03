@@ -5,74 +5,88 @@ import Transaction from '../models/Transaction.js';
 
 const router = express.Router();
 
-//--- NEW ROUTE: Get Portfolio ---
-// Used to display the table on the Dashboard
+// portfolio display karane vala part
 
 router.get('/portfolio/:userId', async (req, res) => {
     try {
         const { userId } = req.params;
-        
-        // Find all stocks owned by this user
+
+        // saare stcoks ka data fetch kar rha ek specific user se 
+
         const portfolio = await Portfolio.find({ userId });
-        
-        // Send the list back to the frontend
+
+        // frontend ko list bhej rha
+
         res.json(portfolio);
-        } catch (err) {
+    } catch (err) {
         console.error(err);
         res.status(500).json({ msg: 'Server Error' });
-        }
-    });
+    }
+});
 
-// POST /api/trade/buy
+// GET /api/trade/transactions/:userId
+router.get('/transactions/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const transactions = await Transaction.find({ userId }).sort({ createdAt: -1 });
+        res.json(transactions);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: 'Server Error' });
+    }
+});
+
+// POST /api/trade/buy...ye request bhej rha
+
 router.post('/buy', async (req, res) => {
     const { userId, symbol, quantity, price } = req.body;
     const totalCost = quantity * price;
 
     try {
-        // 1. Get the User to check balance
+        // balance check kar rhe
         const user = await User.findById(userId);
-        
-        // 2. Check if they have enough money (Assuming user has a 'balance' field)
-        // Note: We need to make sure your User model has a 'balance' field. 
-        // If not, we'll add it in the next step.
+
+        // check kar rha ki kya enough balance hai user ke paas for buying or selling
+
         if (user.balance < totalCost) {
-        return res.status(400).json({ msg: 'Insufficient funds' });
+            return res.status(400).json({ msg: 'Insufficient funds' });
         }
 
-        // 3. Deduct cash from User
+        // paise minus kar rha from balance
+
         user.balance -= totalCost;
         await user.save();
 
-        // 4. Update Portfolio (Add stock)
+        // portfolio update kar rha
         let holding = await Portfolio.findOne({ userId, symbol });
-        
+
         if (holding) {
-        // If they already own it, update average price and quantity
-        const newTotalQuantity = holding.quantity + quantity;
-        const newAvgPrice = ((holding.avgPrice * holding.quantity) + totalCost) / newTotalQuantity;
-        
-        holding.quantity = newTotalQuantity;
-        holding.avgPrice = newAvgPrice;
-        await holding.save();
+            // agar user ke paas already ho
+            const newTotalQuantity = holding.quantity + quantity;
+            const newAvgPrice = ((holding.avgPrice * holding.quantity) + totalCost) / newTotalQuantity;
+
+            holding.quantity = newTotalQuantity;
+            holding.avgPrice = newAvgPrice;
+            await holding.save();
         } else {
-        // If new stock, create new holding
-        const newHolding = new Portfolio({
-            userId,
-            symbol,
-            quantity,
-            avgPrice: price
-        });
-        await newHolding.save();
+            // agar new stock hai toh new holding create ka r rha
+            const newHolding = new Portfolio({
+                userId,
+                symbol,
+                quantity,
+                avgPrice: price
+            });
+            await newHolding.save();
         }
 
-        // 5. Create Transaction Record (History)
+        // transaction history
         const transaction = new Transaction({
-        userId,
-        symbol,
-        type: 'BUY',
-        quantity,
-        price,
-        total: totalCost
+            userId,
+            symbol,
+            type: 'BUY',
+            quantity,
+            price,
+            total: totalCost
         });
         await transaction.save();
 
@@ -83,5 +97,56 @@ router.post('/buy', async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 });
+router.post('/sell', async (req, res) => {
+    const { userId, symbol, quantity, price } = req.body;
+    const totalValue = quantity * price;
+    const upperSymbol = symbol.toUpperCase();
 
+    try {
+        const user = await User.findById(userId);
+        const holding = await Portfolio.findOne({ userId, symbol: upperSymbol });
+
+        // 1. VALIDATION: Do they actually own the stock?
+        if (!holding) {
+            return res.status(400).json({ msg: 'You do not own this stock' });
+        }
+
+        // 2. VALIDATION: Do they have ENOUGH shares?
+        if (holding.quantity < quantity) {
+            return res.status(400).json({ msg: `Not enough shares. You have ${holding.quantity}.` });
+        }
+
+        // 3. CASH OUT: Add money back to balance
+        user.balance += totalValue;
+        await user.save();
+
+        // 4. UPDATE INVENTORY: Subtract shares
+        holding.quantity -= quantity;
+
+        if (holding.quantity === 0) {
+            // If they sold everything, delete the entry from the database
+            await Portfolio.findByIdAndDelete(holding._id);
+        } else {
+            // Otherwise, save the new quantity
+            await holding.save();
+        }
+
+        // 5. RECORD HISTORY: Save the transaction log
+        const transaction = new Transaction({
+            userId,
+            symbol: upperSymbol,
+            type: 'SELL',
+            quantity,
+            price,
+            total: totalValue
+        });
+        await transaction.save();
+
+        res.json({ msg: `Sold ${quantity} shares`, newBalance: user.balance });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: 'Server Error' });
+    }
+});
 export default router;
