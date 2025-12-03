@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from './api';
 
 const RegisterPage = () => {
     const [name, setName] = useState('');
@@ -16,7 +17,7 @@ const RegisterPage = () => {
         setIsLoading(true);
 
         try {
-            await axios.post('https://vestio-api.onrender.com/api/auth/register', {
+            await axios.post(`${API_BASE_URL}/api/auth/register`, {
                 name,
                 email,
                 password,
@@ -33,25 +34,26 @@ const RegisterPage = () => {
 
     return (
         <div className="min-h-screen bg-transparent text-white font-sans selection:bg-blue-500 selection:text-white overflow-x-hidden">
-            {/* Navbar matching HomePage */}
+            {/* navbar */}
             <nav className="fixed top-0 left-0 w-full z-50 px-8 py-6 flex justify-between items-center backdrop-blur-md bg-black/60 border-b border-white/10">
                 <Link to="/" className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent cursor-pointer">
                     Vestio.
                 </Link>
+
                 <div className="flex items-center gap-6">
-                    <Link 
-                        to="/login" 
+                    <Link
+                        to="/login"
                         className="text-gray-300 hover:text-white font-medium text-sm transition-colors duration-200"
                     >
                         Log In
                     </Link>
                 </div>
             </nav>
-
-            {/* Main Content */}
+            {/* main content vala part */}
             <main className="flex flex-col items-center justify-center text-center pt-40 px-4 relative min-h-screen">
                 <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
 
+                {/* email vala part */}
                 <div className="w-full max-w-md relative z-10">
                     <div className="mb-8">
                         <h2 className="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight">
@@ -70,6 +72,7 @@ const RegisterPage = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-6 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-8">
                         <div>
+                            {/* name vala part */}
                             <label className="block text-gray-300 font-semibold mb-2 text-sm">Name</label>
                             <input
                                 type="text"

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { API_BASE_URL } from './api'
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -15,15 +16,22 @@ const LoginPage = () => {
         setIsLoading(true)
 
         try {
-            const res = await axios.post('https://vestio-api.onrender.com/api/auth/login', {
+            // sending login request to server
+            const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
                 email,
                 password,
             })
+            // token mil rha yaha se
 
+            //token save ho rha
             const token = res.data.token
+            //user save ho rha
+            const user = res.data.user;
+            //success
             localStorage.setItem('token', token)
             localStorage.setItem('email', email)
-            
+            localStorage.setItem('userId', user.id);
+
             alert('Login Successful!')
             navigate('/')
 
@@ -42,8 +50,8 @@ const LoginPage = () => {
                     Vestio.
                 </Link>
                 <div className="flex items-center gap-6">
-                    <Link 
-                        to="/register" 
+                    <Link
+                        to="/register"
                         className="px-6 py-2 bg-white text-black font-bold text-sm rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.3)]"
                     >
                         Sign Up
@@ -70,6 +78,7 @@ const LoginPage = () => {
                             {error}
                         </div>
                     )}
+                    {/* email part*/}
 
                     <form onSubmit={handleSubmit} className="space-y-6 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-8">
                         <div>
@@ -85,6 +94,7 @@ const LoginPage = () => {
                         </div>
 
                         <div>
+                            {/*  password vala part */}
                             <label className="block text-gray-300 font-semibold mb-2 text-sm">Password</label>
                             <input
                                 type="password"

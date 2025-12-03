@@ -5,6 +5,24 @@ import Transaction from '../models/Transaction.js';
 
 const router = express.Router();
 
+//--- NEW ROUTE: Get Portfolio ---
+// Used to display the table on the Dashboard
+
+router.get('/portfolio/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        // Find all stocks owned by this user
+        const portfolio = await Portfolio.find({ userId });
+        
+        // Send the list back to the frontend
+        res.json(portfolio);
+        } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: 'Server Error' });
+        }
+    });
+
 // POST /api/trade/buy
 router.post('/buy', async (req, res) => {
     const { userId, symbol, quantity, price } = req.body;

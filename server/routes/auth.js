@@ -28,10 +28,10 @@ router.post('/register', async (req, res) => {
         // agar exist nhi karta to new user bana dega
 
         const newUser = await User.create({ email, password:hashPassword });
-   
-     
 
-   
+    
+
+
 
         res.status(201).json({ msg: 'User registered successfully!' });
 
@@ -76,5 +76,14 @@ router.post('/register', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+router.get('/user/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password'); // Don't send password back
+        if (!user) return res.status(404).json({ msg: 'User not found' });
+        res.json(user);
+        } catch (err) {
+        res.status(500).json({ error: err.message });
+        }
+    });
 
 export default router;
