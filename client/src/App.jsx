@@ -6,6 +6,7 @@ import LiquidEther from './components/LiquidEther';
 import Navbar from './components/Navbar';
 import DashboardPage from './DashboardPage';
 import AboutUsPage from './AboutUsPage';
+import CompanyListPage from './CompanyListPage';
 import './index.css';
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/about" element={<AboutUsPage />} />
+                        <Route path="/companies" element={<CompanyListPage />} />
                     </Routes>
                 </div>
             </div>

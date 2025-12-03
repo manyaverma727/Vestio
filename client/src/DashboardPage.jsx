@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from './api';
 
 const DashboardPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [user, setUser] = useState({ email: 'Trader', balance: 0, id: '' });
 
     // search state vala part
@@ -46,13 +47,21 @@ const DashboardPage = () => {
                 const transactionsRes = await axios.get(`${API_BASE_URL}/api/trade/transactions/${userId}`);
                 setTransactions(transactionsRes.data);
 
+                // Check for incoming stock symbol from CompanyListPage
+                if (location.state?.symbol) {
+                    setSearchQuery(location.state.symbol);
+                    handleSearch(null, location.state.symbol);
+                    // Clear state so it doesn't persist on refresh
+                    window.history.replaceState({}, document.title);
+                }
+
             } catch (err) {
                 console.error("Error loading data:", err);
                 // error ke liye hai ye part
             }
         };
         fetchData();
-    }, [navigate]);
+    }, [navigate, location.state]);
 
     const handleLogout = () => {
         localStorage.clear();
@@ -61,14 +70,16 @@ const DashboardPage = () => {
 
     // stock search karne vala part
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        if (!searchQuery) return;
+    const handleSearch = async (e, symbolOverride = null) => {
+        if (e) e.preventDefault();
+        const query = symbolOverride || searchQuery;
+
+        if (!query) return;
         setLoading(true);
         setStock(null);
 
         try {
-            const res = await axios.get(`${API_BASE_URL}/api/stocks/${searchQuery}`);
+            const res = await axios.get(`${API_BASE_URL}/api/stocks/${query}`);
             setStock(res.data);
             setBuyError('');
         } catch (err) {
@@ -121,15 +132,15 @@ const DashboardPage = () => {
     };
 
     return (
-        <div className="min-h-screen text-white font-sans p-8 pt-24 bg-transparent">
+        <div className="min-h-screen text-white font-sans p-4 md:p-8 pt-24 bg-transparent">
 
             {/* header dashboard ka */}
-            <header className="flex justify-between items-center mb-8 max-w-6xl mx-auto">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 max-w-6xl mx-auto gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold">Welcome, <span className="text-blue-400">{user.email}</span></h1>
+                    <h1 className="text-2xl md:text-3xl font-bold">Welcome, <span className="text-blue-400">{user.email}</span></h1>
                     <p className="text-gray-400 text-sm mt-1">Market Status: <span className="text-green-400">Live</span></p>
                 </div>
-                <div className="text-right">
+                <div className="text-left md:text-right w-full md:w-auto bg-gray-900/50 p-4 rounded-xl md:bg-transparent md:p-0">
                     <p className="text-sm text-gray-400">Buying Power</p>
                     <p className="text-2xl font-bold text-green-400">${user.balance.toLocaleString()}</p>
                 </div>
@@ -137,7 +148,7 @@ const DashboardPage = () => {
 
             {/* search section....search bar */}
             <div className="max-w-6xl mx-auto mb-8">
-                <div className="bg-gray-900/60 backdrop-blur-xl border border-white/10 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6">
+                <div className="bg-gray-900/60 backdrop-blur-xl border border-white/10 p-4 md:p-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6">
 
                     {/* search karne pr jo input hoga */}
                     <form onSubmit={handleSearch} className="flex-1 w-full flex gap-4">

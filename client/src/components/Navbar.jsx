@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [userInitial, setUserInitial] = useState('U');
@@ -9,7 +10,6 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Check login status whenever the route changes (location dependency)
     useEffect(() => {
         const checkLogin = () => {
             const token = localStorage.getItem('token');
@@ -27,7 +27,8 @@ const Navbar = () => {
         };
 
         checkLogin();
-    }, [location]); // Re-run this check every time we change pages
+        setIsMenuOpen(false);
+    }, [location]);
 
     const handleLogout = () => {
         localStorage.clear();
@@ -37,16 +38,19 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 px-8 py-6 flex justify-between items-center backdrop-blur-md bg-black/60 border-b border-white/10">
+        <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-8 py-4 md:py-6 flex justify-between items-center backdrop-blur-md bg-black/60 border-b border-white/10">
             {/* Logo */}
-            <Link to="/" className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent cursor-pointer">
+            <Link to="/" className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent cursor-pointer z-50">
                 Vestio.
             </Link>
 
-            {/* Navigation Links */}
+            {/* Desktop Navigation Links */}
             <div className="hidden md:flex items-center gap-8">
                 <Link to="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                     Home
+                </Link>
+                <Link to="/companies" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                    Market
                 </Link>
                 <Link to="/about" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                     About Us
@@ -58,7 +62,8 @@ const Navbar = () => {
                 )}
             </div>
 
-            <div className="flex items-center gap-6">
+            {/* desktop auth vala part */}
+            <div className="hidden md:flex items-center gap-6">
                 {!isLoggedIn ? (
                     <>
                         <Link to="/login" className="text-gray-300 hover:text-white font-medium text-sm transition-colors duration-200">
@@ -95,6 +100,65 @@ const Navbar = () => {
                     </div>
                 )}
             </div>
+
+            {/* hamburger menu vala part */}
+            <button
+                className="md:hidden text-white z-50 focus:outline-none"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+                {isMenuOpen ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                )}
+            </button>
+
+            {/* Mobile Menu Overlay */}
+            {isMenuOpen && (
+                <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-8 md:hidden">
+                    <Link to="/" className="text-xl font-medium text-gray-300 hover:text-white transition-colors">
+                        Home
+                    </Link>
+                    <Link to="/companies" className="text-xl font-medium text-gray-300 hover:text-white transition-colors">
+                        Market
+                    </Link>
+                    <Link to="/about" className="text-xl font-medium text-gray-300 hover:text-white transition-colors">
+                        About Us
+                    </Link>
+                    {isLoggedIn && (
+                        <Link to="/dashboard" className="text-xl font-medium text-gray-300 hover:text-white transition-colors">
+                            Dashboard
+                        </Link>
+                    )}
+
+                    <div className="w-16 h-px bg-gray-800 my-2"></div>
+
+                    {!isLoggedIn ? (
+                        <div className="flex flex-col gap-4 items-center w-full px-8">
+                            <Link to="/login" className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-200">
+                                Log In
+                            </Link>
+                            <Link to="/register" className="w-full text-center px-6 py-3 bg-white text-black font-bold text-lg rounded-full hover:bg-gray-200 transition-all duration-300">
+                                Sign Up
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-4 items-center">
+                            <div className="text-center">
+                                <p className="text-xs text-gray-500 mb-1">Signed in as</p>
+                                <p className="text-lg font-bold text-white">{userEmail}</p>
+                            </div>
+                            <button onClick={handleLogout} className="text-red-400 hover:text-red-300 font-medium text-lg transition-colors">
+                                Sign Out
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
         </nav>
     );
 };
